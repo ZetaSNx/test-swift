@@ -1,0 +1,4 @@
+.build/
+.swiftpm/
+mongo-data/
+.env

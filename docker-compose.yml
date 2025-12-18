@@ -1,0 +1,32 @@
+services:
+  app:
+    image: swift:6.0-jammy
+    container_name: mi_app_swift
+    ports:
+      - "1234:8080"
+    volumes:
+      - .:/app
+      - /app/.build
+    working_dir: /app
+    depends_on:
+      - mongo
+    
+    # ==========================================
+    # 🔗 CONEXIÓN A LA CAJA FUERTE (.env)
+    # ==========================================
+    env_file:
+      - .env
+
+    command: >
+      sh -c "rm -rf /var/lib/apt/lists/* &&
+             apt-get update && apt-get install -y libssl-dev zlib1g-dev zip git &&
+             swift package resolve &&
+             swift run App serve --hostname 0.0.0.0 --port 8080"
+
+  mongo:
+    image: mongo:7.0
+    container_name: mi_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - /data/db
